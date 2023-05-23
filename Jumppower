@@ -1,0 +1,41 @@
+local MAX_JUMP_POWER = 50 -- Customize the maximum allowed jumppower value here
+local playerData = {}
+
+local function checkJumpPower(player)
+    local character = player.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local jumpPower = humanoid.JumpPower
+            if jumpPower > MAX_JUMP_POWER then
+                print(player.Name .. " has suspicious jump power: " .. jumpPower) -- Make this kick or ban
+            end
+        end
+    end
+end
+
+local function onPlayerAdded(player)
+    playerData[player] = {
+        checkEnabled = true
+    }
+end
+
+local function onPlayerRemoving(player)
+    playerData[player] = nil
+end
+
+local function checkPlayerJumpPower()
+    for player, data in pairs(playerData) do
+        if data.checkEnabled then
+            checkJumpPower(player)
+        end
+    end
+end
+
+game.Players.PlayerAdded:Connect(onPlayerAdded)
+game.Players.PlayerRemoving:Connect(onPlayerRemoving)
+
+while true do
+    checkPlayerJumpPower()
+    wait(1) -- Adjust the time interval between checks as needed
+end
