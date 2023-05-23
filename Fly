@@ -1,0 +1,25 @@
+local anticheatEnabled = true
+
+local function punishPlayer(player)
+    player:Kick("Flying detected - Anti-cheat activated") -- Ban or kick
+end
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if not anticheatEnabled then return end
+
+    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        local maxYVelocity = 80 -- Maximum allowed vertical velocity (adjust as needed)
+        local maxHorizontalVelocity = 100 -- Maximum allowed horizontal velocity (adjust as needed)
+        
+        local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local velocity = humanoid.RootPart.Velocity
+            local yVelocity = math.abs(velocity.Y)
+            local horizontalVelocity = velocity.Magnitude - yVelocity
+
+            if yVelocity > maxYVelocity or horizontalVelocity > maxHorizontalVelocity then
+                punishPlayer(player)
+            end
+        end
+    end
+end)
