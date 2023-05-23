@@ -1,0 +1,35 @@
+local Players = game:GetService("Players")
+
+local suspectedNoclippers = {}
+
+local function checkNoclip(player)
+    local character = player.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+            table.insert(suspectedNoclippers, player)
+        end
+    end
+end
+
+local function handleSuspectedNoclippers()
+    for _, player in ipairs(suspectedNoclippers) do
+        player:Kick("You have been kicked for suspected noclipping.") -- Ban or kick
+    end
+
+    suspectedNoclippers = {}
+end
+
+local function checkNoclippers()
+    while true do
+        for _, player in ipairs(Players:GetPlayers()) do
+            checkNoclip(player)
+        end
+
+        handleSuspectedNoclippers()
+
+        wait(1)  -- Adjust the delay as needed
+    end
+end
+
+checkNoclippers()
