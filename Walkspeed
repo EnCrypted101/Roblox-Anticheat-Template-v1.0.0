@@ -1,0 +1,16 @@
+local Walkspeed = {}
+
+local MAX_WALKSPEED = 32 -- Customize the maximum allowed walkspeed value here
+
+function WalkspeedAnticheat.Start(player)
+    player.CharacterAdded:Connect(function(character)
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+            if humanoid.WalkSpeed > MAX_WALKSPEED then
+                print(player.Name .. " has exceeded the maximum walkspeed limit!") -- Make this kick or ban
+            end
+        end)
+    end)
+end
+
+return Walkspeed
